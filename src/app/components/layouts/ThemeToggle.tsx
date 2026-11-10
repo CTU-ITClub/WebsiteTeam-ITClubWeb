@@ -1,14 +1,12 @@
 import { Moon, Sun } from "lucide-react";
+import { useTheme } from "../../providers/ThemeProvider";
 
-interface ThemeToggleProps {
-  isDark: boolean;
-  onToggle: () => void;
-}
+export default function ThemeToggle() {
+  const { isDark, toggleTheme } = useTheme();
 
-export default function ThemeToggle({ isDark, onToggle }: ThemeToggleProps) {
   return (
     <button
-      onClick={onToggle}
+      onClick={toggleTheme}
       className={`fixed top-20 right-4 sm:top-24 sm:right-8 z-50 p-2 sm:p-3 rounded-full shadow-lg transition-all duration-300 ${
         isDark
           ? "bg-blue-500 hover:bg-blue-600 text-white"

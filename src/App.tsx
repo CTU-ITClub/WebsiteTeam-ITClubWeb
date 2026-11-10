@@ -1,25 +1,16 @@
-import { useState, useEffect } from "react";
 import { HashRouter } from "react-router-dom";
+import { ThemeProvider } from "./app/providers/ThemeProvider";
 import AppRoutes from "./app/routes/AppRoutes";
 
-// để tạm hashrouter để tránh lỗi khi deploy lên github page, vì github page không hỗ trợ browser router
-// sau này có đổi nền tàng thì đổi lại browser router để tốt cho SEO hơn
+// HashRouter giữ lại để tương thích với GitHub Pages.
+// Khi chuyển hosting, đổi sang BrowserRouter để tốt cho SEO hơn.
 
 export default function App() {
-  const [isDark, setIsDark] = useState(() => {
-    const savedTheme = localStorage.getItem("theme");
-    return savedTheme === "dark";
-  });
-
-  useEffect(() => {
-    localStorage.setItem("theme", isDark ? "dark" : "light");
-  }, [isDark]);
-
-  const toggleTheme = () => setIsDark((prev) => !prev);
-
   return (
     <HashRouter>
-      <AppRoutes isDark={isDark} onToggle={toggleTheme} />
+      <ThemeProvider>
+        <AppRoutes />
+      </ThemeProvider>
     </HashRouter>
   );
 }

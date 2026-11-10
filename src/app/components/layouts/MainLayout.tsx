@@ -1,20 +1,22 @@
-import { Outlet } from "react-router-dom";
+import { useEffect } from "react";
+import { Outlet, useLocation } from "react-router-dom";
 import Header from "./Header";
 import ThemeToggle from "./ThemeToggle";
 import { FooterSection } from "./FooterSection";
 
-interface MainLayoutProps {
-  isDark: boolean;
-  onToggle: () => void;
-}
+export default function MainLayout() {
+  const { pathname } = useLocation();
 
-export default function MainLayout({ isDark, onToggle }: MainLayoutProps) {
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "auto" });
+  }, [pathname]);
+
   return (
     <div className="min-h-screen">
-      <ThemeToggle isDark={isDark} onToggle={onToggle} />
-      <Header isDark={isDark} />
+      <ThemeToggle />
+      <Header />
       <Outlet />
-      <FooterSection isDark={isDark} />
+      <FooterSection />
     </div>
   );
 }

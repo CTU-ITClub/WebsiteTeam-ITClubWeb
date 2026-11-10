@@ -1,18 +1,18 @@
 import { useLayoutEffect, useRef, useState, type CSSProperties } from "react";
+import { useTheme } from "../../../providers/ThemeProvider";
 
 interface LogoCarousel_Props {
   direction: "left" | "right";
   LOGOS: string[];
   title: string;
-  isDark: boolean;
 }
 
 export default function LogoCarousel({
   LOGOS,
   direction,
   title,
-  isDark,
 }: LogoCarousel_Props) {
+  const { isDark } = useTheme();
   const animationName = direction === "left" ? "marquee-left" : "marquee-right";
   const groupRef = useRef<HTMLDivElement | null>(null);
   const viewportRef = useRef<HTMLDivElement | null>(null);

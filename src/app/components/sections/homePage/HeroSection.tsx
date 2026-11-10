@@ -1,21 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useTheme } from "../../../providers/ThemeProvider";
+import {
+  fetchCloudinaryImageList,
+  CLOUDINARY_TAGS,
+} from "../../../../services/cloudinary.service";
 
-interface HeroSectionProps {
-  isDark: boolean;
-}
-
-interface CloudinaryResource {
-  public_id?: string;
-  format?: string;
-  version?: number;
-}
-
-const cloudinaryListUrl =
-  "https://res.cloudinary.com/dcvuaqnah/image/list/HomePage-HeroSection.json";
-const cloudName = "dcvuaqnah";
-
-export function HeroSection({ isDark }: HeroSectionProps) {
+export function HeroSection() {
+  const { isDark } = useTheme();
   const [heroImages, setHeroImages] = useState<string[]>([]);
   const [currentHeroImg, setCurrentHeroImg] = useState(0);
 
@@ -24,26 +16,10 @@ export function HeroSection({ isDark }: HeroSectionProps) {
 
     const loadHeroImages = async () => {
       try {
-        const response = await fetch(cloudinaryListUrl, {
-          signal: controller.signal,
-        });
-
-        if (!response.ok) {
-          throw new Error(
-            `Cloudinary image list request failed: ${response.status}`,
-          );
-        }
-
-        const data: { resources?: CloudinaryResource[] } =
-          await response.json();
-        const images = (data.resources ?? [])
-          .map(({ public_id, format, version }) =>
-            public_id
-              ? `https://res.cloudinary.com/${cloudName}/image/upload/${version ? `v${version}/` : ""}${public_id}${format ? `.${format}` : ""}`
-              : "",
-          )
-          .filter((url): url is string => Boolean(url));
-
+        const images = await fetchCloudinaryImageList(
+          CLOUDINARY_TAGS.heroSection,
+          controller.signal
+        );
         setHeroImages(images);
         setCurrentHeroImg(0);
       } catch {
@@ -66,7 +42,7 @@ export function HeroSection({ isDark }: HeroSectionProps) {
   const prevHeroImg = () => {
     if (heroImages.length === 0) return;
     setCurrentHeroImg((prev) =>
-      prev === 0 ? heroImages.length - 1 : prev - 1,
+      prev === 0 ? heroImages.length - 1 : prev - 1
     );
   };
 
@@ -78,7 +54,7 @@ export function HeroSection({ isDark }: HeroSectionProps) {
     if (heroImages.length === 0) return;
     const timer = setInterval(nextHeroImg, 5000);
     return () => clearInterval(timer);
-  }, [nextHeroImg]);
+  }, [nextHeroImg, heroImages.length]);
 
   return (
     <section className="relative h-[90svh] md:h-dvh min-h-[90svh] md:min-h-screen overflow-hidden flex items-center justify-center">

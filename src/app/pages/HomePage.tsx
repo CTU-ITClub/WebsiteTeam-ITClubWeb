@@ -1,4 +1,3 @@
-import { useEffect, useRef, useState } from "react";
 import {
   ActivitiesSection,
   TeamSection,
@@ -6,40 +5,15 @@ import {
   HeroSection,
   IntroSection,
 } from "../components/sections/homePage/index";
-
-interface HomePageProps {
-  isDark: boolean;
-}
+import { useFadeInObserver } from "../../shared/hooks/useFadeInObserver";
+import { useTheme } from "../providers/ThemeProvider";
 
 function FadeInSection({ children }: { children: React.ReactNode }) {
-  const [isVisible, setVisible] = useState(false);
-  const domRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setVisible(true);
-            if (domRef.current) observer.unobserve(domRef.current);
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-    
-    if (domRef.current) {
-      observer.observe(domRef.current);
-    }
-    
-    return () => {
-      if (domRef.current) observer.unobserve(domRef.current);
-    };
-  }, []);
+  const { ref, isVisible } = useFadeInObserver();
 
   return (
     <div
-      ref={domRef}
+      ref={ref}
       className={`transition-all duration-1000 ease-out transform ${
         isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-20"
       }`}
@@ -49,27 +23,29 @@ function FadeInSection({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function HomePage({ isDark }: HomePageProps) {
+export default function HomePage() {
+  const { isDark } = useTheme();
+
   return (
     <div
       className={`min-h-screen transition-colors duration-300 ${isDark ? "dark bg-[#0a1929]" : "bg-slate-50"}`}
     >
-      <HeroSection isDark={isDark} />
+      <HeroSection />
 
       <div
         className={`${isDark ? "bg-linear-to-b from-[#0d2137] to-[#1a365d]" : "bg-linear-to-b from-slate-50 to-white"} overflow-x-hidden`}
       >
         <FadeInSection>
-          <IntroSection isDark={isDark} />
+          <IntroSection />
         </FadeInSection>
         <FadeInSection>
-          <ActivitiesSection isDark={isDark} />
+          <ActivitiesSection />
         </FadeInSection>
         <FadeInSection>
-          <TeamSection isDark={isDark} />
+          <TeamSection />
         </FadeInSection>
         <FadeInSection>
-          <QaASection isDark={isDark} />
+          <QaASection />
         </FadeInSection>
       </div>
     </div>

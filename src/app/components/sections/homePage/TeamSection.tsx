@@ -1,38 +1,10 @@
-import {
-  BrainCircuit,
-  LayoutTemplate,
-  Smartphone,
-  Gamepad,
-} from "lucide-react";
+import { useTheme } from "../../../providers/ThemeProvider";
+import { getTeams } from "../../../../services/team.service";
 
-interface TeamSectionProps {
-  isDark: boolean;
-}
+export function TeamSection() {
+  const { isDark } = useTheme();
+  const teams = getTeams();
 
-const teams = [
-  {
-    name: "AI",
-    icon: BrainCircuit,
-    description: "Mô tả chưa biết ghi gì :<",
-  },
-  {
-    name: "Web",
-    icon: LayoutTemplate,
-    description: "Biến ý tưởng thành trải nghiệm mượt mà trên mọi trình duyệt.",
-  },
-  {
-    name: "Mobile",
-    icon: Smartphone,
-    description: "Mô tả chưa biết ghi gì :<",
-  },
-  {
-    name: "Game",
-    icon: Gamepad,
-    description: "Mô tả chưa biết ghi gì :<",
-  },
-];
-
-export function TeamSection({ isDark }: TeamSectionProps) {
   return (
     // remove section-level background so it inherits the parent's background
     <section className="py-20 md:py-28">

@@ -1,36 +1,24 @@
 import { useState, useEffect } from "react";
-import { Rocket, Lightbulb } from "lucide-react";
+import { useTheme } from "../../../providers/ThemeProvider";
+import {
+  fetchCloudinaryImageList,
+  CLOUDINARY_TAGS,
+} from "../../../../services/cloudinary.service";
+import { getIntroItems } from "../../../../services/intro.service";
+import type { IntroItem } from "../../../../services/intro.service";
 
-interface IntroSectionProps {
-  isDark: boolean;
-}
+const FALLBACK_IMAGE =
+  "https://res.cloudinary.com/dcvuaqnah/image/upload/v1780765921/image7_yq8igi.png";
 
-const Items = [
-  {
-    name: "Sứ mệnh",
-    icon: Rocket,
-    description:
-      "Tạo ra một cộng đồng năng động cho những người đam mê công nghệ thông tin, mang đến trải nghiệm học tập phong phú và cơ hội phát triển toàn diện.",
-  },
-  {
-    name: "Tầm nhìn",
-    icon: Lightbulb,
-    description:
-      "Trở thành một trong những câu lạc bộ công nghệ hàng đầu, nơi các thành viên có thể phát triển kỹ năng, chia sẻ kiến thức và cùng nhau tạo ra những giá trị tích cực cho cộng đồng.",
-  },
-];
-
-export function IntroSection({ isDark }: IntroSectionProps) {
-  const [imageUrl, setImageUrl] = useState("https://res.cloudinary.com/dcvuaqnah/image/upload/v1780765921/image7_yq8igi.png");
+export function IntroSection() {
+  const { isDark } = useTheme();
+  const [imageUrl, setImageUrl] = useState(FALLBACK_IMAGE);
+  const items: IntroItem[] = getIntroItems();
 
   useEffect(() => {
-    fetch("https://res.cloudinary.com/dcvuaqnah/image/list/HomePage-IntroSection.json")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.resources && data.resources.length > 0) {
-          const img = data.resources[0];
-          setImageUrl(`https://res.cloudinary.com/dcvuaqnah/image/upload/v${img.version}/${img.public_id}.${img.format}`);
-        }
+    fetchCloudinaryImageList(CLOUDINARY_TAGS.introSection)
+      .then((images) => {
+        if (images.length > 0) setImageUrl(images[0]);
       })
       .catch((err) => console.error("Error fetching IntroSection image:", err));
   }, []);
@@ -71,7 +59,7 @@ export function IntroSection({ isDark }: IntroSectionProps) {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mt-10">
-          {Items.map((t) => {
+          {items.map((t) => {
             const Icon = t.icon;
             return (
               <div

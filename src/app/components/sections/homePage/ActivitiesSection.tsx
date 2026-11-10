@@ -1,48 +1,29 @@
 import { useState, useEffect } from "react";
 import LogoCarousel from "./LogoCarousel";
+import { useTheme } from "../../../providers/ThemeProvider";
+import {
+  fetchCloudinaryImageList,
+  CLOUDINARY_TAGS,
+} from "../../../../services/cloudinary.service";
 
-interface ActivitiesSection_Props {
-  isDark: boolean;
-}
-
-interface CloudinaryResource {
-  version: number;
-  public_id: string;
-  format: string;
-}
-
-
-export function ActivitiesSection({ isDark }: ActivitiesSection_Props) {
+export function ActivitiesSection() {
+  const { isDark } = useTheme();
   const [logosWorkshop, setLogosWorkshop] = useState<string[]>([]);
   const [logosGame, setLogosGame] = useState<string[]>([]);
   const [logosExam, setLogosExam] = useState<string[]>([]);
 
   useEffect(() => {
-    const fetchCloudinaryList = async (url: string) => {
-      try {
-        const res = await fetch(url);
-        const data = await res.json();
-        if (data.resources && data.resources.length > 0) {
-          return data.resources.map(
-            (img: CloudinaryResource) =>
-              `https://res.cloudinary.com/dcvuaqnah/image/upload/v${img.version}/${img.public_id}.${img.format}`,
-          );
-        }
-      } catch (error) {
-        console.error("Error fetching Cloudinary list:", error);
-      }
-      return [];
-    };
+    fetchCloudinaryImageList(CLOUDINARY_TAGS.activitiesWorkshop)
+      .then((urls) => urls.length && setLogosWorkshop(urls))
+      .catch((err) => console.error("Error fetching workshop images:", err));
 
-    fetchCloudinaryList(
-      "https://res.cloudinary.com/dcvuaqnah/image/list/HomePage-ActivitiesSection-Workshops.json",
-    ).then((urls) => urls.length && setLogosWorkshop(urls));
-    fetchCloudinaryList(
-      "https://res.cloudinary.com/dcvuaqnah/image/list/HomePage-ActivitiesSection-GameAndAdmission.json",
-    ).then((urls) => urls.length && setLogosGame(urls));
-    fetchCloudinaryList(
-      "https://res.cloudinary.com/dcvuaqnah/image/list/HomePage-ActivitiesSection-Competitions.json",
-    ).then((urls) => urls.length && setLogosExam(urls));
+    fetchCloudinaryImageList(CLOUDINARY_TAGS.activitiesGame)
+      .then((urls) => urls.length && setLogosGame(urls))
+      .catch((err) => console.error("Error fetching game images:", err));
+
+    fetchCloudinaryImageList(CLOUDINARY_TAGS.activitiesExam)
+      .then((urls) => urls.length && setLogosExam(urls))
+      .catch((err) => console.error("Error fetching exam images:", err));
   }, []);
 
   return (
@@ -59,19 +40,16 @@ export function ActivitiesSection({ isDark }: ActivitiesSection_Props) {
           LOGOS={logosWorkshop}
           direction="left"
           title="Workshop"
-          isDark={isDark}
         />
         <LogoCarousel
           LOGOS={logosGame}
           direction="right"
           title="Game và tuyển sinh"
-          isDark={isDark}
         />
         <LogoCarousel
           LOGOS={logosExam}
           direction="left"
           title="Các cuộc thi"
-          isDark={isDark}
         />
       </div>
     </section>

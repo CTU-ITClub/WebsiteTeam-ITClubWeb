@@ -1,21 +1,13 @@
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { NavLink } from "react-router-dom";
+import { useTheme } from "../../providers/ThemeProvider";
+import { navItems } from "../../../shared/constants/navigation";
 import logoLight from "../../../assets/images/layouts/logo-light.svg";
 import logoDark from "../../../assets/images/layouts/logo-dark.svg";
 
-interface HeaderProps {
-  isDark: boolean;
-}
-
-const navItems = [
-  { label: "Trang chủ", to: "/" },
-  { label: "Giới thiệu", to: "/about" },
-  { label: "Nhân sự", to: "/staff" },
-  { label: "Hoạt động", to: "/activities" },
-];
-
-export default function Header({ isDark }: HeaderProps) {
+export default function Header() {
+  const { isDark } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
 
   const handleToggle = () => setIsOpen((prev) => !prev);
@@ -61,6 +53,7 @@ export default function Header({ isDark }: HeaderProps) {
             <NavLink
               key={item.label}
               to={item.to}
+              end={item.to === "/"}
               className={({ isActive }) =>
                 `relative px-4 py-2 md:px-3 md:py-2 rounded-xl md:rounded-2xl font-semibold text-base sm:text-lg md:text-xl transition-all duration-300 ${
                   isActive
