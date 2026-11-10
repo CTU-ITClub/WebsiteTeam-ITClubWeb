@@ -100,10 +100,6 @@ Examples that do **not** follow the convention:
 | `fix/mobile menu` | Contains a space. | `fix/mobile-menu` |
 | `feature/update` | Does not explain the change. | `feature/activity-gallery` |
 
-### Frontend prototype
-
-Use `prototype/html-css-frontend` for an experimental HTML and CSS version of the frontend. Open a draft pull request so the team can review the design and code before deciding whether to implement it in React. Keep the prototype unmerged until the team decides how to proceed: pushes to `main` trigger the deployment workflow. If the team approves a React implementation, use a separate feature branch such as `feature/react-home-page` for that work.
-
 ## 📝 Commit message conventions
 
 A consistent commit message makes the project history easier to read. The team can use this format:
